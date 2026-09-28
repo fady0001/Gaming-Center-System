@@ -1,0 +1,1 @@
+enum AppRole { employee, manager }
