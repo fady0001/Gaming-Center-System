@@ -65,6 +65,9 @@ class Cart {
 
   final Money? finalTotal;
 
+  /// اليوم (WorkDay) الذي أُنشئت فيه السلة.
+  final int? dayId;
+
   final List<CartItemLine> items;
   final List<CartPlayLine> playLines;
 
@@ -75,6 +78,7 @@ class Cart {
     required this.status,
     this.closedAt,
     this.finalTotal,
+    this.dayId,
     this.items = const [],
     this.playLines = const [],
   });

@@ -25,6 +25,9 @@ class PlayStationDeviceModel {
   @Index()
   bool isActiveFlag = true;
 
+  /// الأجهزة القديمة تقرأ false تلقائيًا.
+  bool isUnderMaintenance = false;
+
   PlayStationDevice toEntity() {
     return PlayStationDevice(
       id: id,
@@ -38,6 +41,7 @@ class PlayStationDeviceModel {
       minimumChargeMinutes: minimumChargeMinutes,
       roundingIncrementMinutes: roundingIncrementMinutes,
       isActive: isActiveFlag,
+      isUnderMaintenance: isUnderMaintenance,
     );
   }
 
@@ -51,6 +55,7 @@ class PlayStationDeviceModel {
       ..rate4MinorUnits = e.hourlyRates[3].minorUnits
       ..minimumChargeMinutes = e.minimumChargeMinutes
       ..roundingIncrementMinutes = e.roundingIncrementMinutes
-      ..isActiveFlag = e.isActive;
+      ..isActiveFlag = e.isActive
+      ..isUnderMaintenance = e.isUnderMaintenance;
   }
 }

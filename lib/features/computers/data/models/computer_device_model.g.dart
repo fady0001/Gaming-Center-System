@@ -23,23 +23,28 @@ const ComputerDeviceModelSchema = CollectionSchema(
       name: r'isActiveFlag',
       type: IsarType.bool,
     ),
-    r'minimumChargeMinutes': PropertySchema(
+    r'isUnderMaintenance': PropertySchema(
       id: 1,
+      name: r'isUnderMaintenance',
+      type: IsarType.bool,
+    ),
+    r'minimumChargeMinutes': PropertySchema(
+      id: 2,
       name: r'minimumChargeMinutes',
       type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'rateMinorUnitsPerHour': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'rateMinorUnitsPerHour',
       type: IsarType.long,
     ),
     r'roundingIncrementMinutes': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'roundingIncrementMinutes',
       type: IsarType.long,
     )
@@ -102,10 +107,11 @@ void _computerDeviceModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.isActiveFlag);
-  writer.writeLong(offsets[1], object.minimumChargeMinutes);
-  writer.writeString(offsets[2], object.name);
-  writer.writeLong(offsets[3], object.rateMinorUnitsPerHour);
-  writer.writeLong(offsets[4], object.roundingIncrementMinutes);
+  writer.writeBool(offsets[1], object.isUnderMaintenance);
+  writer.writeLong(offsets[2], object.minimumChargeMinutes);
+  writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.rateMinorUnitsPerHour);
+  writer.writeLong(offsets[5], object.roundingIncrementMinutes);
 }
 
 ComputerDeviceModel _computerDeviceModelDeserialize(
@@ -117,10 +123,11 @@ ComputerDeviceModel _computerDeviceModelDeserialize(
   final object = ComputerDeviceModel();
   object.id = id;
   object.isActiveFlag = reader.readBool(offsets[0]);
-  object.minimumChargeMinutes = reader.readLong(offsets[1]);
-  object.name = reader.readString(offsets[2]);
-  object.rateMinorUnitsPerHour = reader.readLong(offsets[3]);
-  object.roundingIncrementMinutes = reader.readLong(offsets[4]);
+  object.isUnderMaintenance = reader.readBool(offsets[1]);
+  object.minimumChargeMinutes = reader.readLong(offsets[2]);
+  object.name = reader.readString(offsets[3]);
+  object.rateMinorUnitsPerHour = reader.readLong(offsets[4]);
+  object.roundingIncrementMinutes = reader.readLong(offsets[5]);
   return object;
 }
 
@@ -134,12 +141,14 @@ P _computerDeviceModelDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
-    case 3:
       return (reader.readLong(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
     case 4:
+      return (reader.readLong(offset)) as P;
+    case 5:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -457,6 +466,16 @@ extension ComputerDeviceModelQueryFilter on QueryBuilder<ComputerDeviceModel,
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActiveFlag',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterFilterCondition>
+      isUnderMaintenanceEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isUnderMaintenance',
         value: value,
       ));
     });
@@ -790,6 +809,20 @@ extension ComputerDeviceModelQuerySortBy
   }
 
   QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterSortBy>
+      sortByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterSortBy>
+      sortByIsUnderMaintenanceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterSortBy>
       sortByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'minimumChargeMinutes', Sort.asc);
@@ -877,6 +910,20 @@ extension ComputerDeviceModelQuerySortThenBy
   }
 
   QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterSortBy>
+      thenByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterSortBy>
+      thenByIsUnderMaintenanceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QAfterSortBy>
       thenByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'minimumChargeMinutes', Sort.asc);
@@ -943,6 +990,13 @@ extension ComputerDeviceModelQueryWhereDistinct
   }
 
   QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QDistinct>
+      distinctByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isUnderMaintenance');
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, ComputerDeviceModel, QDistinct>
       distinctByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'minimumChargeMinutes');
@@ -983,6 +1037,13 @@ extension ComputerDeviceModelQueryProperty
       isActiveFlagProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActiveFlag');
+    });
+  }
+
+  QueryBuilder<ComputerDeviceModel, bool, QQueryOperations>
+      isUnderMaintenanceProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isUnderMaintenance');
     });
   }
 

@@ -6,6 +6,7 @@ import '../../domain/entities/table_entity.dart';
 
 part 'table_model.g.dart';
 
+/// يحتاج توليد كود: dart run build_runner build --delete-conflicting-outputs
 @collection
 class TableModel {
   Id id = Isar.autoIncrement;
@@ -23,6 +24,9 @@ class TableModel {
   @Index()
   bool isActiveFlag = true;
 
+  /// الأجهزة القديمة تقرأ false تلقائيًا.
+  bool isUnderMaintenance = false;
+
   TableEntity toEntity() {
     return TableEntity(
       id: id,
@@ -34,6 +38,7 @@ class TableModel {
         roundingIncrementMinutes: roundingIncrementMinutes,
       ),
       isActive: isActiveFlag,
+      isUnderMaintenance: isUnderMaintenance,
     );
   }
 
@@ -46,6 +51,7 @@ class TableModel {
       ..minimumChargeMinutes = entity.defaultRate.minimumChargeMinutes
       ..roundingIncrementMinutes =
           entity.defaultRate.roundingIncrementMinutes
-      ..isActiveFlag = entity.isActive;
+      ..isActiveFlag = entity.isActive
+      ..isUnderMaintenance = entity.isUnderMaintenance;
   }
 }

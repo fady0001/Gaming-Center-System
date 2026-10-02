@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'core/alerts/alert_center.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_manager.dart';
 import 'core/security/license_service.dart';
@@ -11,12 +12,21 @@ import 'core/backup/backup_service.dart';
 import 'core/backup/app_lifecycle_service.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'features/auth/presentation/pages/role_gate_page.dart';
+import 'features/bookings/data/repositories/booking_repository_impl.dart';
+import 'features/bookings/domain/repositories/booking_repository.dart';
+import 'features/bookings/presentation/cubit/bookings_cubit.dart';
+import 'features/bookings/presentation/widgets/booking_reminder_host.dart';
 import 'features/carts/data/repositories/cart_repository_impl.dart';
 import 'features/carts/domain/repositories/cart_repository.dart';
 import 'features/carts/presentation/cubit/carts_cubit.dart';
 import 'features/computers/data/repositories/computer_repository_impl.dart';
 import 'features/computers/domain/repositories/computer_repository.dart';
 import 'features/computers/presentation/cubit/computers_cubit.dart';
+import 'features/days/data/repositories/work_day_repository_impl.dart';
+import 'features/devices/presentation/cubit/devices_overview_cubit.dart';
+import 'features/days/domain/repositories/work_day_repository.dart';
+import 'features/days/domain/usecases/start_new_day.dart';
+import 'features/days/presentation/cubit/work_day_cubit.dart';
 import 'features/menu/data/repositories/menu_repository_impl.dart';
 import 'features/menu/domain/repositories/menu_repository.dart';
 import 'features/menu/presentation/cubit/menu_cubit.dart';
@@ -24,6 +34,8 @@ import 'features/playstation/data/repositories/playstation_repository_impl.dart'
 import 'features/playstation/domain/repositories/playstation_repository.dart';
 import 'features/playstation/presentation/cubit/playstation_cubit.dart';
 import 'features/sessions/data/repositories/session_repository_impl.dart';
+import 'features/timers/data/expiry_alert_notifier.dart';
+import 'features/timers/presentation/widgets/expiry_alert_host.dart';
 import 'features/sessions/domain/repositories/session_repository.dart';
 import 'features/sessions/presentation/cubit/active_sessions_cubit.dart';
 import 'features/tables/data/repositories/table_repository_impl.dart';
@@ -44,6 +56,8 @@ void main() async {
   CartRepository? cartRepository;
   PlayStationRepository? playStationRepository;
   ComputerRepository? computerRepository;
+  WorkDayRepository? workDayRepository;
+  BookingRepository? bookingRepository;
 
   if (licenseResult.isValid) {
 
@@ -56,9 +70,12 @@ void main() async {
     cartRepository = CartRepositoryImpl(isar, sessionRepository);
     playStationRepository = PlayStationRepositoryImpl(isar);
     computerRepository = ComputerRepositoryImpl(isar);
+    workDayRepository = WorkDayRepositoryImpl(isar);
+    bookingRepository = BookingRepositoryImpl(isar);
 
   
     await AppLifecycleService.instance.initialize();
+    await ExpiryAlertNotifier.instance.init();
 
 
     BackupService.startAutoBackupScheduler();
@@ -73,6 +90,8 @@ void main() async {
     cartRepository: cartRepository,
     playStationRepository: playStationRepository,
     computerRepository: computerRepository,
+    workDayRepository: workDayRepository,
+    bookingRepository: bookingRepository,
   ));
 }
 
@@ -85,6 +104,8 @@ class BilliardHallApp extends StatelessWidget {
   final CartRepository? cartRepository;
   final PlayStationRepository? playStationRepository;
   final ComputerRepository? computerRepository;
+  final WorkDayRepository? workDayRepository;
+  final BookingRepository? bookingRepository;
 
   const BilliardHallApp({
     super.key,
@@ -96,6 +117,8 @@ class BilliardHallApp extends StatelessWidget {
     required this.cartRepository,
     required this.playStationRepository,
     required this.computerRepository,
+    required this.workDayRepository,
+    required this.bookingRepository,
   });
 
   @override
@@ -113,6 +136,21 @@ class BilliardHallApp extends StatelessWidget {
           BlocProvider(create: (_) => CartsCubit(cartRepository!)),
           BlocProvider(create: (_) => PlayStationCubit(playStationRepository!)),
           BlocProvider(create: (_) => ComputersCubit(computerRepository!)),
+          BlocProvider(
+            create: (ctx) => DevicesOverviewCubit(
+              ctx.read<PlayStationCubit>(),
+              ctx.read<ComputersCubit>(),
+              ctx.read<TablesCubit>(),
+              ctx.read<ActiveSessionsCubit>(),
+            ),
+          ),
+          BlocProvider(create: (_) => BookingsCubit(bookingRepository!)),
+          BlocProvider(
+            create: (_) => WorkDayCubit(
+              workDayRepository!,
+              StartNewDay(cartRepository!, workDayRepository!),
+            ),
+          ),
         ],
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
@@ -130,9 +168,17 @@ class BilliardHallApp extends StatelessWidget {
             ],
             builder: (context, child) {
            
+              final content = child ?? const SizedBox.shrink();
+              // المراقبون يحتاجون الـ Cubits، فلا يعملون عند قفل الترخيص.
               return Directionality(
                 textDirection: TextDirection.rtl,
-                child: child ?? const SizedBox.shrink(),
+                child: licenseResult.isValid
+                    ? ExpiryAlertHost(
+                        child: BookingReminderHost(
+                          child: AlertOverlay(child: content),
+                        ),
+                      )
+                    : content,
               );
             },
 

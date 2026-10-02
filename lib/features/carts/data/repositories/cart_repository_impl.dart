@@ -4,6 +4,7 @@ import 'package:isar/isar.dart';
 
 import '../../../../core/domain/entities/billing_rate.dart';
 import '../../../../core/domain/value_objects/money.dart';
+import '../../../days/data/work_day_store.dart';
 import '../../../menu/data/models/menu_item_model.dart';
 import '../../../sessions/domain/entities/active_session.dart';
 import '../../../sessions/domain/repositories/session_repository.dart';
@@ -32,6 +33,7 @@ class CartRepositoryImpl implements CartRepository {
       finalTotal: m.finalTotalMinorUnits == null
           ? null
           : Money(m.finalTotalMinorUnits!),
+      dayId: m.dayId,
       items: items
           .map((i) => CartItemLine(
                 id: i.id,
@@ -66,7 +68,24 @@ class CartRepositoryImpl implements CartRepository {
     final models = await _isar.cartModels
         .filter()
         .statusEqualTo(CartStatus.open)
-        .sortByCreatedAt()
+        .sortByCreatedAtDesc()
+        .findAll();
+    final result = <Cart>[];
+    for (final m in models) {
+      result.add(await _assemble(m));
+    }
+    return result;
+  }
+
+  @override
+  Future<List<Cart>> getOpenCarts() => _loadOpen();
+
+  @override
+  Future<List<Cart>> getCartsByDay(int dayId) async {
+    final models = await _isar.cartModels
+        .filter()
+        .dayIdEqualTo(dayId)
+        .sortByCreatedAtDesc()
         .findAll();
     final result = <Cart>[];
     for (final m in models) {
@@ -120,6 +139,8 @@ class CartRepositoryImpl implements CartRepository {
       ..createdAt = DateTime.now()
       ..status = CartStatus.open;
     await _isar.writeTxn(() async {
+      final day = await WorkDayStore.ensureOpenDay(_isar);
+      model.dayId = day.id;
       await _isar.cartModels.put(model);
     });
     return _assemble(model);
@@ -249,6 +270,22 @@ class CartRepositoryImpl implements CartRepository {
         .statusEqualTo(CartStatus.closed)
         .sortByClosedAtDesc()
         .limit(limit)
+        .findAll();
+    final result = <Cart>[];
+    for (final m in models) {
+      result.add(await _assemble(m));
+    }
+    return result;
+  }
+
+  @override
+  Future<List<Cart>> getClosedCartsBetween(DateTime start, DateTime end) async {
+    final models = await _isar.cartModels
+        .filter()
+        .statusEqualTo(CartStatus.closed)
+        .and()
+        .closedAtBetween(start, end, includeLower: true, includeUpper: false)
+        .sortByClosedAtDesc()
         .findAll();
     final result = <Cart>[];
     for (final m in models) {

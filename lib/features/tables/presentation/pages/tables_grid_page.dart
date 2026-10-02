@@ -5,6 +5,8 @@ import '../../../../core/theme/dimensions.dart';
 import '../../../auth/presentation/widgets/role_badge_action.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../carts/presentation/pages/carts_page.dart';
+import '../../../bookings/presentation/pages/bookings_page.dart';
+import '../../../days/presentation/widgets/work_day_action.dart';
 import '../../../menu/presentation/pages/menu_page.dart';
 import '../../../resources_admin/presentation/pages/resources_admin_page.dart';
 import '../../../sessions/domain/entities/active_session.dart';
@@ -13,7 +15,9 @@ import '../cubit/tables_cubit.dart';
 import '../widgets/table_card.dart';
 import '../widgets/table_session_sheet.dart';
 
-
+/// الشاشة الرئيسية لقسم الطاولات: شبكة متجاوبة من البطاقات، كل بطاقة
+/// تعرض حالتها الحية (فارغة/مشغولة + الوقت + السعر) وتفتح شاشة الإدارة
+/// عند الضغط عليها.
 class TablesGridPage extends StatelessWidget {
   const TablesGridPage({super.key});
 
@@ -23,6 +27,14 @@ class TablesGridPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('الطاولات'),
         actions: [
+          IconButton(
+            tooltip: 'الحجوزات',
+            icon: const Icon(Icons.event_available_outlined),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const BookingsPage()),
+            ),
+          ),
+          const WorkDayAction(),
           IconButton(
             tooltip: 'سلال الزبائن',
             icon: const Icon(Icons.shopping_basket_outlined),

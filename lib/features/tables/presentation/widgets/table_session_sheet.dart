@@ -8,6 +8,13 @@ import '../../../sessions/domain/entities/active_session.dart';
 import '../../../sessions/presentation/cubit/active_sessions_cubit.dart';
 import '../../domain/entities/table_entity.dart';
 
+/// يُعرض عند الضغط على أي بطاقة طاولة. شاشة واحدة بسيطة: إما زر "بدء جلسة"
+/// الكبير، أو ملخص الجلسة الحية مع زر "إنهاء وإصدار الفاتورة".
+///
+/// ملاحظة: عرض الفاتورة النهائية بتنسيقها الكامل والطباعة سيُبنيان في ميزة
+/// invoicing القادمة. هذه الشاشة تكتفي بعرض ملخص واضح فور الإغلاق، وتُرجع
+/// نتيجة الإغلاق (SessionCheckoutSummary) للمتصل حتى تستطيع ميزة invoicing
+/// لاحقًا استقبالها مباشرة دون أي تعديل هنا.
 class TableSessionSheet extends StatelessWidget {
   final TableEntity table;
   final ActiveSession? activeSession;

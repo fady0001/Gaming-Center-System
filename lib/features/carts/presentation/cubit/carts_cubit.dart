@@ -61,6 +61,11 @@ class CartsCubit extends Cubit<CartsState> {
 
   Future<Cart> checkout(int cartId) => _repository.checkout(cartId);
 
+  Future<List<Cart>> closedCartsBetween(DateTime start, DateTime end) =>
+      _repository.getClosedCartsBetween(start, end);
+
+  Future<List<Cart>> cartsOfDay(int dayId) => _repository.getCartsByDay(dayId);
+
   Future<List<Cart>> closedCarts({int limit = 200}) =>
       _repository.getClosedCarts(limit: limit);
 

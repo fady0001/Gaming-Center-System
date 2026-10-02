@@ -3,7 +3,9 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  audioplayers_linux
   isar_flutter_libs
+  local_notifier
   printing
   screen_retriever_linux
   tray_manager

@@ -13,6 +13,10 @@ class ComputerDevice {
   /// تعطيل بدل حذف (نفس منطق باقي الموارد).
   final bool isActive;
 
+  /// في الصيانة: يبقى ظاهرًا في النظام لكن لا يمكن حجزه/تشغيله حتى تنتهي الصيانة.
+  /// مختلف عن [isActive] (الإخفاء/الإزالة من الخدمة).
+  final bool isUnderMaintenance;
+
   const ComputerDevice({
     required this.id,
     required this.name,
@@ -20,6 +24,7 @@ class ComputerDevice {
     this.minimumChargeMinutes = 0,
     this.roundingIncrementMinutes = 1,
     this.isActive = true,
+    this.isUnderMaintenance = false,
   });
 
   /// تُنسخ كـ"لقطة" داخل الجلسة عند بدئها.
@@ -35,6 +40,7 @@ class ComputerDevice {
     int? minimumChargeMinutes,
     int? roundingIncrementMinutes,
     bool? isActive,
+    bool? isUnderMaintenance,
   }) {
     return ComputerDevice(
       id: id,
@@ -44,6 +50,7 @@ class ComputerDevice {
       roundingIncrementMinutes:
           roundingIncrementMinutes ?? this.roundingIncrementMinutes,
       isActive: isActive ?? this.isActive,
+      isUnderMaintenance: isUnderMaintenance ?? this.isUnderMaintenance,
     );
   }
 }

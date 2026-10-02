@@ -17,6 +17,10 @@ class CartModel {
   late CartStatus status;
 
   int? finalTotalMinorUnits;
+
+  /// السلال القديمة (قبل إضافة الأيام) تكون null وتُنسب لأول يوم عند إنشائه.
+  @Index()
+  int? dayId;
 }
 
 @collection

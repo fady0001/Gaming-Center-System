@@ -72,8 +72,12 @@ class _TablesTab extends StatelessWidget {
                 child: ListTile(
                   title: Text(t.name),
                   subtitle: Text(
-                      '${t.type.arabicLabel} — الساعة: ${t.defaultRate.ratePerHour.toDisplayString()}'),
+                      '${t.type.arabicLabel} — الساعة: ${t.defaultRate.ratePerHour.toDisplayString()}'
+                      '${t.isUnderMaintenance ? ' — تحت الصيانة' : ''}'),
                   trailing: _RowMenu(
+                    underMaintenance: t.isUnderMaintenance,
+                    onToggleMaintenance: () => context.read<TablesCubit>().updateTable(
+                        t.copyWith(isUnderMaintenance: !t.isUnderMaintenance)),
                     onEdit: () => TableFormDialog.show(context, table: t),
                     onHide: () => _confirmHide(
                       context,
@@ -124,8 +128,12 @@ class _PlayStationTab extends StatelessWidget {
                 child: ListTile(
                   leading: const Icon(Icons.sports_esports_outlined),
                   title: Text(d.name),
-                  subtitle: Text('الساعة — ${_ratesSummary(d)}'),
+                  subtitle: Text('الساعة — ${_ratesSummary(d)}'
+                      '${d.isUnderMaintenance ? ' — تحت الصيانة' : ''}'),
                   trailing: _RowMenu(
+                    underMaintenance: d.isUnderMaintenance,
+                    onToggleMaintenance: () => context.read<PlayStationCubit>().updateDevice(
+                        d.copyWith(isUnderMaintenance: !d.isUnderMaintenance)),
                     onEdit: () => PlayStationFormDialog.show(context, device: d),
                     onHide: () => _confirmHide(
                       context,
@@ -168,8 +176,12 @@ class _ComputersTab extends StatelessWidget {
                 child: ListTile(
                   leading: const Icon(Icons.computer_outlined),
                   title: Text(d.name),
-                  subtitle: Text('الساعة: ${d.hourlyRate.toDisplayString()}'),
+                  subtitle: Text('الساعة: ${d.hourlyRate.toDisplayString()}'
+                      '${d.isUnderMaintenance ? ' — تحت الصيانة' : ''}'),
                   trailing: _RowMenu(
+                    underMaintenance: d.isUnderMaintenance,
+                    onToggleMaintenance: () => context.read<ComputersCubit>().updateDevice(
+                        d.copyWith(isUnderMaintenance: !d.isUnderMaintenance)),
                     onEdit: () => ComputerFormDialog.show(context, device: d),
                     onHide: () => _confirmHide(
                       context,
@@ -189,15 +201,35 @@ class _ComputersTab extends StatelessWidget {
 class _RowMenu extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onHide;
-  const _RowMenu({required this.onEdit, required this.onHide});
+  final VoidCallback onToggleMaintenance;
+  final bool underMaintenance;
+  const _RowMenu({
+    required this.onEdit,
+    required this.onHide,
+    required this.onToggleMaintenance,
+    required this.underMaintenance,
+  });
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      onSelected: (v) => v == 'edit' ? onEdit() : onHide(),
-      itemBuilder: (_) => const [
-        PopupMenuItem(value: 'edit', child: Text('تعديل')),
-        PopupMenuItem(value: 'hide', child: Text('إخفاء')),
+      onSelected: (v) {
+        switch (v) {
+          case 'edit':
+            onEdit();
+          case 'maintenance':
+            onToggleMaintenance();
+          default:
+            onHide();
+        }
+      },
+      itemBuilder: (_) => [
+        const PopupMenuItem(value: 'edit', child: Text('تعديل')),
+        PopupMenuItem(
+          value: 'maintenance',
+          child: Text(underMaintenance ? 'إنهاء الصيانة' : 'وضع في الصيانة'),
+        ),
+        const PopupMenuItem(value: 'hide', child: Text('إخفاء')),
       ],
     );
   }

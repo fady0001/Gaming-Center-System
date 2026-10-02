@@ -10,6 +10,7 @@ import '../../../sessions/presentation/cubit/active_sessions_cubit.dart';
 import '../../../invoicing/presentation/pages/invoice_preview_page.dart';
 import '../../domain/entities/cart.dart';
 import '../cubit/carts_cubit.dart';
+import '../widgets/countdown_card.dart';
 import '../widgets/add_menu_item_sheet.dart';
 import '../widgets/add_play_line_sheet.dart';
 import '../widgets/format_helpers.dart';
@@ -141,6 +142,13 @@ class CartDetailPage extends StatelessWidget {
   }
 
   Widget _playLineTile(CartPlayLine line, SessionsState sessions) {
+    if (!line.isSettled && !line.isOpenTime) {
+      return CountdownCard(
+        line: line,
+        now: sessions.now,
+        chargeText: _liveCharge(line, sessions).toDisplayString(),
+      );
+    }
     final elapsed = sessions.now.difference(line.startedAt);
     final safeElapsed = elapsed.isNegative ? Duration.zero : elapsed;
 

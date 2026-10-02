@@ -22,28 +22,33 @@ const TableModelSchema = CollectionSchema(
       name: r'isActiveFlag',
       type: IsarType.bool,
     ),
-    r'minimumChargeMinutes': PropertySchema(
+    r'isUnderMaintenance': PropertySchema(
       id: 1,
+      name: r'isUnderMaintenance',
+      type: IsarType.bool,
+    ),
+    r'minimumChargeMinutes': PropertySchema(
+      id: 2,
       name: r'minimumChargeMinutes',
       type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'rateMinorUnitsPerHour': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'rateMinorUnitsPerHour',
       type: IsarType.long,
     ),
     r'roundingIncrementMinutes': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'roundingIncrementMinutes',
       type: IsarType.long,
     ),
     r'type': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'type',
       type: IsarType.string,
       enumMap: _TableModeltypeEnumValueMap,
@@ -108,11 +113,12 @@ void _tableModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.isActiveFlag);
-  writer.writeLong(offsets[1], object.minimumChargeMinutes);
-  writer.writeString(offsets[2], object.name);
-  writer.writeLong(offsets[3], object.rateMinorUnitsPerHour);
-  writer.writeLong(offsets[4], object.roundingIncrementMinutes);
-  writer.writeString(offsets[5], object.type.name);
+  writer.writeBool(offsets[1], object.isUnderMaintenance);
+  writer.writeLong(offsets[2], object.minimumChargeMinutes);
+  writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.rateMinorUnitsPerHour);
+  writer.writeLong(offsets[5], object.roundingIncrementMinutes);
+  writer.writeString(offsets[6], object.type.name);
 }
 
 TableModel _tableModelDeserialize(
@@ -124,12 +130,13 @@ TableModel _tableModelDeserialize(
   final object = TableModel();
   object.id = id;
   object.isActiveFlag = reader.readBool(offsets[0]);
-  object.minimumChargeMinutes = reader.readLong(offsets[1]);
-  object.name = reader.readString(offsets[2]);
-  object.rateMinorUnitsPerHour = reader.readLong(offsets[3]);
-  object.roundingIncrementMinutes = reader.readLong(offsets[4]);
+  object.isUnderMaintenance = reader.readBool(offsets[1]);
+  object.minimumChargeMinutes = reader.readLong(offsets[2]);
+  object.name = reader.readString(offsets[3]);
+  object.rateMinorUnitsPerHour = reader.readLong(offsets[4]);
+  object.roundingIncrementMinutes = reader.readLong(offsets[5]);
   object.type =
-      _TableModeltypeValueEnumMap[reader.readStringOrNull(offsets[5])] ??
+      _TableModeltypeValueEnumMap[reader.readStringOrNull(offsets[6])] ??
           TableType.billiards;
   return object;
 }
@@ -144,14 +151,16 @@ P _tableModelDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
-    case 3:
       return (reader.readLong(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
     case 4:
       return (reader.readLong(offset)) as P;
     case 5:
+      return (reader.readLong(offset)) as P;
+    case 6:
       return (_TableModeltypeValueEnumMap[reader.readStringOrNull(offset)] ??
           TableType.billiards) as P;
     default:
@@ -477,6 +486,16 @@ extension TableModelQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActiveFlag',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterFilterCondition>
+      isUnderMaintenanceEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isUnderMaintenance',
         value: value,
       ));
     });
@@ -932,6 +951,20 @@ extension TableModelQuerySortBy
   }
 
   QueryBuilder<TableModel, TableModel, QAfterSortBy>
+      sortByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy>
+      sortByIsUnderMaintenanceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy>
       sortByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'minimumChargeMinutes', Sort.asc);
@@ -1025,6 +1058,20 @@ extension TableModelQuerySortThenBy
   }
 
   QueryBuilder<TableModel, TableModel, QAfterSortBy>
+      thenByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy>
+      thenByIsUnderMaintenanceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QAfterSortBy>
       thenByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'minimumChargeMinutes', Sort.asc);
@@ -1100,6 +1147,13 @@ extension TableModelQueryWhereDistinct
   }
 
   QueryBuilder<TableModel, TableModel, QDistinct>
+      distinctByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isUnderMaintenance');
+    });
+  }
+
+  QueryBuilder<TableModel, TableModel, QDistinct>
       distinctByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'minimumChargeMinutes');
@@ -1146,6 +1200,13 @@ extension TableModelQueryProperty
   QueryBuilder<TableModel, bool, QQueryOperations> isActiveFlagProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActiveFlag');
+    });
+  }
+
+  QueryBuilder<TableModel, bool, QQueryOperations>
+      isUnderMaintenanceProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isUnderMaintenance');
     });
   }
 

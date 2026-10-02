@@ -7,7 +7,9 @@ import '../../../../core/theme/text_styles.dart';
 import '../../../sessions/domain/entities/active_session.dart';
 import '../../domain/entities/table_entity.dart';
 
-
+/// بطاقة طاولة واحدة داخل الشبكة. تعتمد بالكامل على الألوان لتوصيل الحالة
+/// بلمحة بصرية سريعة (موظف يراقب عشرات الطاولات في نفس الوقت لا وقت لديه
+/// لقراءة نص طويل لكل بطاقة).
 class TableCard extends StatelessWidget {
   final TableEntity table;
   final ActiveSession? activeSession;

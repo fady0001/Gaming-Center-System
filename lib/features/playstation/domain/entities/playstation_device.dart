@@ -15,6 +15,10 @@ class PlayStationDevice {
   /// تعطيل بدل حذف (نفس منطق الطاولات والمنيو).
   final bool isActive;
 
+  /// في الصيانة: يبقى ظاهرًا في النظام لكن لا يمكن حجزه/تشغيله حتى تنتهي الصيانة.
+  /// مختلف عن [isActive] (الإخفاء/الإزالة من الخدمة).
+  final bool isUnderMaintenance;
+
   const PlayStationDevice({
     required this.id,
     required this.name,
@@ -22,6 +26,7 @@ class PlayStationDevice {
     this.minimumChargeMinutes = 0,
     this.roundingIncrementMinutes = 1,
     this.isActive = true,
+    this.isUnderMaintenance = false,
   }) : assert(hourlyRates.length == maxPlayers);
 
   /// قاعدة التسعير الخاصة بعدد لاعبين معيّن. تُنسخ كـ"لقطة" داخل الجلسة
@@ -41,6 +46,7 @@ class PlayStationDevice {
     int? minimumChargeMinutes,
     int? roundingIncrementMinutes,
     bool? isActive,
+    bool? isUnderMaintenance,
   }) {
     return PlayStationDevice(
       id: id,
@@ -50,6 +56,7 @@ class PlayStationDevice {
       roundingIncrementMinutes:
           roundingIncrementMinutes ?? this.roundingIncrementMinutes,
       isActive: isActive ?? this.isActive,
+      isUnderMaintenance: isUnderMaintenance ?? this.isUnderMaintenance,
     );
   }
 }

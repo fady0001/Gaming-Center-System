@@ -32,13 +32,18 @@ const CartModelSchema = CollectionSchema(
       name: r'customerName',
       type: IsarType.string,
     ),
-    r'finalTotalMinorUnits': PropertySchema(
+    r'dayId': PropertySchema(
       id: 3,
+      name: r'dayId',
+      type: IsarType.long,
+    ),
+    r'finalTotalMinorUnits': PropertySchema(
+      id: 4,
       name: r'finalTotalMinorUnits',
       type: IsarType.long,
     ),
     r'status': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'status',
       type: IsarType.string,
       enumMap: _CartModelstatusEnumValueMap,
@@ -49,7 +54,21 @@ const CartModelSchema = CollectionSchema(
   deserialize: _cartModelDeserialize,
   deserializeProp: _cartModelDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'dayId': IndexSchema(
+      id: -1956546583500246945,
+      name: r'dayId',
+      unique: false,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'dayId',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _cartModelGetId,
@@ -78,8 +97,9 @@ void _cartModelSerialize(
   writer.writeDateTime(offsets[0], object.closedAt);
   writer.writeDateTime(offsets[1], object.createdAt);
   writer.writeString(offsets[2], object.customerName);
-  writer.writeLong(offsets[3], object.finalTotalMinorUnits);
-  writer.writeString(offsets[4], object.status.name);
+  writer.writeLong(offsets[3], object.dayId);
+  writer.writeLong(offsets[4], object.finalTotalMinorUnits);
+  writer.writeString(offsets[5], object.status.name);
 }
 
 CartModel _cartModelDeserialize(
@@ -92,10 +112,11 @@ CartModel _cartModelDeserialize(
   object.closedAt = reader.readDateTimeOrNull(offsets[0]);
   object.createdAt = reader.readDateTime(offsets[1]);
   object.customerName = reader.readString(offsets[2]);
-  object.finalTotalMinorUnits = reader.readLongOrNull(offsets[3]);
+  object.dayId = reader.readLongOrNull(offsets[3]);
+  object.finalTotalMinorUnits = reader.readLongOrNull(offsets[4]);
   object.id = id;
   object.status =
-      _CartModelstatusValueEnumMap[reader.readStringOrNull(offsets[4])] ??
+      _CartModelstatusValueEnumMap[reader.readStringOrNull(offsets[5])] ??
           CartStatus.open;
   return object;
 }
@@ -116,6 +137,8 @@ P _cartModelDeserializeProp<P>(
     case 3:
       return (reader.readLongOrNull(offset)) as P;
     case 4:
+      return (reader.readLongOrNull(offset)) as P;
+    case 5:
       return (_CartModelstatusValueEnumMap[reader.readStringOrNull(offset)] ??
           CartStatus.open) as P;
     default:
@@ -149,6 +172,14 @@ extension CartModelQueryWhereSort
   QueryBuilder<CartModel, CartModel, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhere> anyDayId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'dayId'),
+      );
     });
   }
 }
@@ -215,6 +246,116 @@ extension CartModelQueryWhere
         lower: lowerId,
         includeLower: includeLower,
         upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'dayId',
+        value: [null],
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dayId',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdEqualTo(
+      int? dayId) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'dayId',
+        value: [dayId],
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdNotEqualTo(
+      int? dayId) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dayId',
+              lower: [],
+              upper: [dayId],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dayId',
+              lower: [dayId],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dayId',
+              lower: [dayId],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'dayId',
+              lower: [],
+              upper: [dayId],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdGreaterThan(
+    int? dayId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dayId',
+        lower: [dayId],
+        includeLower: include,
+        upper: [],
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdLessThan(
+    int? dayId, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dayId',
+        lower: [],
+        upper: [dayId],
+        includeUpper: include,
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterWhereClause> dayIdBetween(
+    int? lowerDayId,
+    int? upperDayId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'dayId',
+        lower: [lowerDayId],
+        includeLower: includeLower,
+        upper: [upperDayId],
         includeUpper: includeUpper,
       ));
     });
@@ -478,6 +619,75 @@ extension CartModelQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'customerName',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterFilterCondition> dayIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'dayId',
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterFilterCondition> dayIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'dayId',
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterFilterCondition> dayIdEqualTo(
+      int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dayId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterFilterCondition> dayIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dayId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterFilterCondition> dayIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dayId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterFilterCondition> dayIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dayId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -783,6 +993,18 @@ extension CartModelQuerySortBy on QueryBuilder<CartModel, CartModel, QSortBy> {
     });
   }
 
+  QueryBuilder<CartModel, CartModel, QAfterSortBy> sortByDayId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dayId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterSortBy> sortByDayIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dayId', Sort.desc);
+    });
+  }
+
   QueryBuilder<CartModel, CartModel, QAfterSortBy>
       sortByFinalTotalMinorUnits() {
     return QueryBuilder.apply(this, (query) {
@@ -848,6 +1070,18 @@ extension CartModelQuerySortThenBy
     });
   }
 
+  QueryBuilder<CartModel, CartModel, QAfterSortBy> thenByDayId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dayId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CartModel, CartModel, QAfterSortBy> thenByDayIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dayId', Sort.desc);
+    });
+  }
+
   QueryBuilder<CartModel, CartModel, QAfterSortBy>
       thenByFinalTotalMinorUnits() {
     return QueryBuilder.apply(this, (query) {
@@ -908,6 +1142,12 @@ extension CartModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<CartModel, CartModel, QDistinct> distinctByDayId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dayId');
+    });
+  }
+
   QueryBuilder<CartModel, CartModel, QDistinct>
       distinctByFinalTotalMinorUnits() {
     return QueryBuilder.apply(this, (query) {
@@ -946,6 +1186,12 @@ extension CartModelQueryProperty
   QueryBuilder<CartModel, String, QQueryOperations> customerNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'customerName');
+    });
+  }
+
+  QueryBuilder<CartModel, int?, QQueryOperations> dayIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dayId');
     });
   }
 

@@ -23,38 +23,43 @@ const PlayStationDeviceModelSchema = CollectionSchema(
       name: r'isActiveFlag',
       type: IsarType.bool,
     ),
-    r'minimumChargeMinutes': PropertySchema(
+    r'isUnderMaintenance': PropertySchema(
       id: 1,
+      name: r'isUnderMaintenance',
+      type: IsarType.bool,
+    ),
+    r'minimumChargeMinutes': PropertySchema(
+      id: 2,
       name: r'minimumChargeMinutes',
       type: IsarType.long,
     ),
     r'name': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'name',
       type: IsarType.string,
     ),
     r'rate1MinorUnits': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'rate1MinorUnits',
       type: IsarType.long,
     ),
     r'rate2MinorUnits': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'rate2MinorUnits',
       type: IsarType.long,
     ),
     r'rate3MinorUnits': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'rate3MinorUnits',
       type: IsarType.long,
     ),
     r'rate4MinorUnits': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'rate4MinorUnits',
       type: IsarType.long,
     ),
     r'roundingIncrementMinutes': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'roundingIncrementMinutes',
       type: IsarType.long,
     )
@@ -117,13 +122,14 @@ void _playStationDeviceModelSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.isActiveFlag);
-  writer.writeLong(offsets[1], object.minimumChargeMinutes);
-  writer.writeString(offsets[2], object.name);
-  writer.writeLong(offsets[3], object.rate1MinorUnits);
-  writer.writeLong(offsets[4], object.rate2MinorUnits);
-  writer.writeLong(offsets[5], object.rate3MinorUnits);
-  writer.writeLong(offsets[6], object.rate4MinorUnits);
-  writer.writeLong(offsets[7], object.roundingIncrementMinutes);
+  writer.writeBool(offsets[1], object.isUnderMaintenance);
+  writer.writeLong(offsets[2], object.minimumChargeMinutes);
+  writer.writeString(offsets[3], object.name);
+  writer.writeLong(offsets[4], object.rate1MinorUnits);
+  writer.writeLong(offsets[5], object.rate2MinorUnits);
+  writer.writeLong(offsets[6], object.rate3MinorUnits);
+  writer.writeLong(offsets[7], object.rate4MinorUnits);
+  writer.writeLong(offsets[8], object.roundingIncrementMinutes);
 }
 
 PlayStationDeviceModel _playStationDeviceModelDeserialize(
@@ -135,13 +141,14 @@ PlayStationDeviceModel _playStationDeviceModelDeserialize(
   final object = PlayStationDeviceModel();
   object.id = id;
   object.isActiveFlag = reader.readBool(offsets[0]);
-  object.minimumChargeMinutes = reader.readLong(offsets[1]);
-  object.name = reader.readString(offsets[2]);
-  object.rate1MinorUnits = reader.readLong(offsets[3]);
-  object.rate2MinorUnits = reader.readLong(offsets[4]);
-  object.rate3MinorUnits = reader.readLong(offsets[5]);
-  object.rate4MinorUnits = reader.readLong(offsets[6]);
-  object.roundingIncrementMinutes = reader.readLong(offsets[7]);
+  object.isUnderMaintenance = reader.readBool(offsets[1]);
+  object.minimumChargeMinutes = reader.readLong(offsets[2]);
+  object.name = reader.readString(offsets[3]);
+  object.rate1MinorUnits = reader.readLong(offsets[4]);
+  object.rate2MinorUnits = reader.readLong(offsets[5]);
+  object.rate3MinorUnits = reader.readLong(offsets[6]);
+  object.rate4MinorUnits = reader.readLong(offsets[7]);
+  object.roundingIncrementMinutes = reader.readLong(offsets[8]);
   return object;
 }
 
@@ -155,11 +162,11 @@ P _playStationDeviceModelDeserializeProp<P>(
     case 0:
       return (reader.readBool(offset)) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
-    case 3:
       return (reader.readLong(offset)) as P;
+    case 3:
+      return (reader.readString(offset)) as P;
     case 4:
       return (reader.readLong(offset)) as P;
     case 5:
@@ -167,6 +174,8 @@ P _playStationDeviceModelDeserializeProp<P>(
     case 6:
       return (reader.readLong(offset)) as P;
     case 7:
+      return (reader.readLong(offset)) as P;
+    case 8:
       return (reader.readLong(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -486,6 +495,16 @@ extension PlayStationDeviceModelQueryFilter on QueryBuilder<
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'isActiveFlag',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel,
+      QAfterFilterCondition> isUnderMaintenanceEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isUnderMaintenance',
         value: value,
       ));
     });
@@ -989,6 +1008,20 @@ extension PlayStationDeviceModelQuerySortBy
   }
 
   QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QAfterSortBy>
+      sortByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.asc);
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QAfterSortBy>
+      sortByIsUnderMaintenanceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QAfterSortBy>
       sortByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'minimumChargeMinutes', Sort.asc);
@@ -1118,6 +1151,20 @@ extension PlayStationDeviceModelQuerySortThenBy on QueryBuilder<
   }
 
   QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QAfterSortBy>
+      thenByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.asc);
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QAfterSortBy>
+      thenByIsUnderMaintenanceDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isUnderMaintenance', Sort.desc);
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QAfterSortBy>
       thenByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'minimumChargeMinutes', Sort.asc);
@@ -1226,6 +1273,13 @@ extension PlayStationDeviceModelQueryWhereDistinct
   }
 
   QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QDistinct>
+      distinctByIsUnderMaintenance() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isUnderMaintenance');
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, PlayStationDeviceModel, QDistinct>
       distinctByMinimumChargeMinutes() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'minimumChargeMinutes');
@@ -1287,6 +1341,13 @@ extension PlayStationDeviceModelQueryProperty on QueryBuilder<
       isActiveFlagProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isActiveFlag');
+    });
+  }
+
+  QueryBuilder<PlayStationDeviceModel, bool, QQueryOperations>
+      isUnderMaintenanceProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isUnderMaintenance');
     });
   }
 

@@ -100,24 +100,30 @@ class _AddPlayLineSheetState extends State<AddPlayLineSheet> {
         .watch<TablesCubit>()
         .state
         .tables
-        .where((t) => sessions.sessionForResource(t.id) == null)
+        .where((t) =>
+            !t.isUnderMaintenance &&
+            sessions.sessionForResource(t.id) == null)
         .toList();
     final freeDevices = context
         .watch<PlayStationCubit>()
         .state
         .devices
-        .where((d) => sessions.sessionForResource(d.id,
-                type: SessionResourceType.playstationDevice) ==
-            null)
+        .where((d) =>
+            !d.isUnderMaintenance &&
+            sessions.sessionForResource(d.id,
+                    type: SessionResourceType.playstationDevice) ==
+                null)
         .toList();
 
     final freeComputers = context
         .watch<ComputersCubit>()
         .state
         .devices
-        .where((d) => sessions.sessionForResource(d.id,
-                type: SessionResourceType.cybercafeDevice) ==
-            null)
+        .where((d) =>
+            !d.isUnderMaintenance &&
+            sessions.sessionForResource(d.id,
+                    type: SessionResourceType.cybercafeDevice) ==
+                null)
         .toList();
 
     return DraggableScrollableSheet(

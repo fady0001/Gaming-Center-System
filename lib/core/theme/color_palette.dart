@@ -40,6 +40,11 @@ class ColorPalette {
   // ألوان مخصصة لحالات الجلسات (مفيدة جدًا لموظف غير تقني ليفهم الحالة
   // بلمحة بصرية سريعة دون قراءة نص)
   // ---------------------------------------------------------------------
+  // حالات الأجهزة (شريط الحالة العلوي)
+  static const Color statusActive = Color(0xFF10B981); // شغالة
+  static const Color statusIdle = Color(0xFF06B6D4); // شاغرة
+  static const Color statusMaintenance = Color(0xFFB85450); // معطلة/صيانة
+
   static const Color sessionActive = Color(0xFF2E7D32); // طاولة/جهاز مشغول
   static const Color sessionIdle = Color(0xFF9E9E9E); // طاولة/جهاز فارغ
   static const Color sessionOverdue = Color(0xFFC62828); // تجاوز الوقت المحجوز

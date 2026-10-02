@@ -4,7 +4,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../features/sessions/data/models/session_model.dart';
 import '../../features/tables/data/models/table_model.dart';
 import '../../features/carts/data/models/cart_models.dart';
+import '../../features/bookings/data/models/booking_model.dart';
 import '../../features/computers/data/models/computer_device_model.dart';
+import '../../features/days/data/models/work_day_model.dart';
 import '../../features/menu/data/models/menu_item_model.dart';
 import '../../features/playstation/data/models/playstation_device_model.dart';
 
@@ -24,6 +26,8 @@ class DatabaseConfig {
     CartPlayLineModelSchema,
     PlayStationDeviceModelSchema,
     ComputerDeviceModelSchema,
+    WorkDayModelSchema,
+    BookingModelSchema,
 
   ];
 

@@ -20,6 +20,9 @@ class ComputerDeviceModel {
   @Index()
   bool isActiveFlag = true;
 
+  /// الأجهزة القديمة تقرأ false تلقائيًا.
+  bool isUnderMaintenance = false;
+
   ComputerDevice toEntity() {
     return ComputerDevice(
       id: id,
@@ -28,6 +31,7 @@ class ComputerDeviceModel {
       minimumChargeMinutes: minimumChargeMinutes,
       roundingIncrementMinutes: roundingIncrementMinutes,
       isActive: isActiveFlag,
+      isUnderMaintenance: isUnderMaintenance,
     );
   }
 
@@ -38,6 +42,7 @@ class ComputerDeviceModel {
       ..rateMinorUnitsPerHour = e.hourlyRate.minorUnits
       ..minimumChargeMinutes = e.minimumChargeMinutes
       ..roundingIncrementMinutes = e.roundingIncrementMinutes
-      ..isActiveFlag = e.isActive;
+      ..isActiveFlag = e.isActive
+      ..isUnderMaintenance = e.isUnderMaintenance;
   }
 }

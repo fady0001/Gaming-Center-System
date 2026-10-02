@@ -5,6 +5,11 @@ import '../entities/cart.dart';
 abstract class CartRepository {
   Stream<List<Cart>> watchOpenCarts();
 
+  Future<List<Cart>> getOpenCarts();
+
+  /// كل سلال يوم معيّن (مفتوحة ومغلقة)، الأحدث أولًا.
+  Future<List<Cart>> getCartsByDay(int dayId);
+
   Future<Cart> createCart(String customerName);
 
   Future<void> addItem({
@@ -28,4 +33,7 @@ abstract class CartRepository {
   Future<Cart> checkout(int cartId);
 
   Future<List<Cart>> getClosedCarts({int limit = 200});
+
+  /// الفواتير المغلقة التي أُغلقت ضمن [start, end)، الأحدث أولًا.
+  Future<List<Cart>> getClosedCartsBetween(DateTime start, DateTime end);
 }
